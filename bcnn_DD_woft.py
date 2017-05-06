@@ -288,36 +288,18 @@ if __name__ == '__main__':
     vgg = vgg16(imgs, 'vgg16_weights.npz', sess)
 
     
-    #print X_train.shape
-    
-    
     
     #with tf.device("/gpu:0"):
     print('VGG network created')
-    #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=vgg.probs, labels=target))
+    
     
     # Defining other ops using Tensorflow
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=vgg.fc3l, labels=target))
     learning_rate_wft = tf.placeholder(tf.float32, shape=[])
     learning_rate_woft = tf.placeholder(tf.float32, shape=[])
 
-
-    #optimizer_wft = tf.train.MomentumOptimizer(learning_rate=learning_rate_wft, momentum=0.9).minimize(loss,var_list=vgg.parameters)
-    #optimizer_woft = tf.train.MomentumOptimizer(learning_rate=learning_rate_woft, momentum=0.9).minimize(loss,var_list=vgg.last_layer_parameters)
-    #optimizer_wft = tf.train.GradientDescentOptimizer(learning_rate=learning_rate_wft).minimize(loss,var_list=vgg.parameters)
-    #optimizer_woft = tf.train.GradientDescentOptimizer(learning_rate=learning_rate_woft).minimize(loss,var_list=vgg.last_layer_parameters)
-    
-    #combined_optimizer = tf.group(optimizer_wft, optimizer_woft)
-    #optimizer2 = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9)
     optimizer = tf.train.MomentumOptimizer(learning_rate=0.9, momentum=0.9).minimize(loss)
 
-    #with_fine_tuning_optimizer = optimizer2.minimize(loss, var_list = vgg.parameters)
-    #without_fine_tuning_optimizer = optimizer.minimize(loss, var_list = vgg.last_layer_parameters)
-
-
-
-    #optimizer_wft = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9).minimize(loss)
-    #optimizer_woft = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9).minimize(loss, var_list = vgg.last_layer_parameters)
 
     correct_prediction = tf.equal(tf.argmax(vgg.fc3l,1), tf.argmax(target,1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -327,28 +309,27 @@ if __name__ == '__main__':
     sess.run(tf.global_variables_initializer())
 
     vgg.load_weights(sess)
-    # Initializing the variables
-    #init = tf.global_variables_initializer()
-    # Launch the graph
 
-    #sess.run(init)
     batch_size = 32
 
-    #print "Trainable", tf.trainable_variables()[0]
+
     print('Starting training')
 
     lr = 1.0
     base_lr = 1.0
-    finetune_step = 50
+    break_training_epoch = 15
     for epoch in range(100):
         avg_cost = 0.
         total_batch = int(6000/batch_size)
         X_train, Y_train = shuffle(X_train, Y_train)
-        #X_val, Y_val = shuffle(X_val, Y_val)
-
         
 
-        '''if epoch==15:
+        
+        # Uncomment following section if you want to break training at a particular epoch
+
+        '''
+
+        if epoch==break_training_epoch:
             last_layer_weights = []
             for v in vgg.parameters:
                 print(v)
@@ -359,7 +340,6 @@ if __name__ == '__main__':
             print("Last layer weights saved")
             break'''
 
-        #print ('Learning rate: ', (str(lr)))
         for i in range(total_batch):
             batch_xs, batch_ys = X_train[i*batch_size:i*batch_size+batch_size], Y_train[i*batch_size:i*batch_size+batch_size]
             batch_xs = random_flip_right_to_left(batch_xs)
@@ -368,29 +348,17 @@ if __name__ == '__main__':
             start = time.time()
             sess.run(optimizer, feed_dict={imgs: batch_xs, target: batch_ys})
             if i%20==0:
-                print('Last layer training, time to run optimizer for batch size 32:',time.time()-start,'seconds')
-            #else:
-            #sess.run(combined_optimizer, feed_dict={imgs: batch_xs, target: batch_ys, learning_rate_wft: 0.001, learning_rate_woft:0.001})
+                print('Last layer training, time to run optimizer for batch size:', batch_size,'is --> ',time.time()-start,'seconds')
 
-            #pred = sess.run(num_correct_preds, feed_dict = {imgs: batch_xs, target: batch_ys})
-            #print("correct_train_count, total_train_count", pred, batch_size)
 
             cost = sess.run(loss, feed_dict={imgs: batch_xs, target: batch_ys})
-            #avg_cost += cost/total_batch
             if i % 100 == 0:
                 #print ('Learning rate: ', (str(lr)))
                 if epoch <= finetune_step:
                     print("Training last layer of BCNN_DD")
-                else:
-                    print("Fine tuning all BCNN_DD")
 
                 print("Epoch:", '%03d' % (epoch+1), "Step:", '%03d' % i,"Loss:", str(cost))
-                #print("Training Accuracy -->", accuracy.eval(feed_dict={imgs: batch_xs, target: batch_ys}, session=sess))
                 print("Training Accuracy -->", sess.run(accuracy,feed_dict={imgs: batch_xs, target: batch_ys}))
-
-        #batch_val_x, batch_val_y = X_val[0:100], Y_val[0:100]
-        #print("Validation loss", sess.run(loss, feed_dict={imgs: batch_val_x, target: batch_val_y}))
-        #print("Validation Accuracy -->", accuracy.eval(feed_dict={imgs: batch_val_x, target: batch_val_y}, session=sess))
 
         val_batch_size = 10
         total_val_count = len(X_val)
