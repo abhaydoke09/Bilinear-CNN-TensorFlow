@@ -1,13 +1,21 @@
+'''
+This file is to train only the last fully connected layer of BCNN_DD.
+BCNN_DD network needs images of input size [3x448x448].
+For using the random crops, images are first resized to [3x488x488] using create_h5_dataset.py.
+During the training, images are randomly cropped to the size of [3x448x448] 
+Weights for the last layer can be saved to a file and will be used during 
+finetuning the whole BCNN_DD network 
+'''
+
 from __future__ import print_function
+
 import tensorflow as tf
 import numpy as np
-#from scipy.misc import imread, imresize
 import tflearn
 from tflearn.data_preprocessing import ImagePreprocessing
 from tflearn.data_augmentation import ImageAugmentation
 import os
 from tflearn.data_utils import shuffle
-
 import pickle 
 from tflearn.data_utils import image_preloader
 import h5py
@@ -15,16 +23,6 @@ import math
 import logging
 import random
 import time
-
-
-
-'''logging.basicConfig(level=logging.INFO, format='%(message)s')
-logger = logging.getLogger()
-logger.addHandler(logging.FileHandler('BCNN_DD_lr_1.log', 'a'))
-print = logger.info'''
-
-
-#logging.basicConfig(level=logging.INFO)
 
 
 def random_flip_right_to_left(image_batch):
