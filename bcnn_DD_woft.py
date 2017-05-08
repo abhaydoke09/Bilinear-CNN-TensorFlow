@@ -1,7 +1,6 @@
 from __future__ import print_function
 import tensorflow as tf
 import numpy as np
-#from scipy.misc import imread, imresize
 import tflearn
 from tflearn.data_preprocessing import ImagePreprocessing
 from tflearn.data_augmentation import ImageAugmentation
