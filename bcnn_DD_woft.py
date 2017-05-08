@@ -327,7 +327,6 @@ if __name__ == '__main__':
         # Uncomment following section if you want to break training at a particular epoch
 
         '''
-
         if epoch==break_training_epoch:
             last_layer_weights = []
             for v in vgg.parameters:
@@ -337,7 +336,8 @@ if __name__ == '__main__':
                     last_layer_weights.append(sess.run(v))
             np.savez('last_layers_epoch_15.npz',last_layer_weights)
             print("Last layer weights saved")
-            break'''
+            break
+        '''
 
         for i in range(total_batch):
             batch_xs, batch_ys = X_train[i*batch_size:i*batch_size+batch_size], Y_train[i*batch_size:i*batch_size+batch_size]
@@ -376,10 +376,6 @@ if __name__ == '__main__':
         print("correct_val_count, total_val_count", correct_val_count, total_val_count)
         print("Validation Data Accuracy -->", 100.0*correct_val_count/(1.0*total_val_count))
         print("##############################")
-        if epoch>50:
-            if (100.0*correct_val_count/(1.0*total_val_count))>75:
-                break
-
 
         
 
