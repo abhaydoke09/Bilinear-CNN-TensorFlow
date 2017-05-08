@@ -12,22 +12,13 @@ import pickle
 from tflearn.data_utils import image_preloader
 import h5py
 import math
-#import logging
+
 import random
 import time
 
 
 
 
-
-
-'''logging.basicConfig(level=logging.INFO, format='%(message)s')
-logger = logging.getLogger()
-logger.addHandler(logging.FileHandler('BCNN_DD_lr_1.log', 'a'))
-print = logger.info'''
-
-
-#logging.basicConfig(level=logging.INFO)
 
 
 
@@ -343,7 +334,7 @@ if __name__ == '__main__':
     #print Y_train[0]
     print("Device placement on. Creating Session")
     
-    #sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+    
     sess = tf.Session()
     #sess = tf.InteractiveSession()
     #with tf.device('/gpu:0'):
@@ -353,71 +344,37 @@ if __name__ == '__main__':
     vgg = vgg16(imgs, 'vgg16_weights.npz', sess)
 
     
-    #print X_train.shape
+    
     
     
     
     #with tf.device("/gpu:0"):
     print('VGG network created')
-    #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=vgg.probs, labels=target))
+    
     
     # Defining other ops using Tensorflow
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=vgg.fc3l, labels=target))
-    #learning_rate = tf.placeholder(tf.float32, shape=[])
-    #learning_rate_wft = tf.placeholder(tf.float32, shape=[])
-    #learning_rate_woft = tf.placeholder(tf.float32, shape=[])
+    
     print([_.name for _ in vgg.parameters])
 
-    #optimizer_wft = tf.train.MomentumOptimizer(learning_rate=0.001, momentum=0.9).minimize(loss,var_list=vgg.parameters)
-    #optimizer_woft = tf.train.MomentumOptimizer(learning_rate=0.9, momentum=0.9).minimize(loss,var_list=vgg.last_layer_parameters)
     
     optimizer = tf.train.MomentumOptimizer(learning_rate=0.001, momentum=0.9).minimize(loss)
-    #grad_wft = optimizer_wft.compute_gradients(loss)
-    #clipped_wft = [(tf.clip_by_value(grad, -10., 10.), var) for grad, var in grad_wft] 
-    #clipped_wft = grad_wft
-    #train_op_wft = optimizer_wft.apply_gradients(clipped_wft)
-
-
-    #optimizer_woft = tf.train.MomentumOptimizer(learning_rate=0.001 , momentum=0.9)
-    #grad_woft = optimizer_woft.compute_gradients(loss)
-    #clipped_woft = [(tf.clip_by_value(grad, -1., 1.), var) for grad, var in grad_woft] 
-    #clipped_woft = grad_woft
-    #train_op_woft = optimizer_woft.apply_gradients(clipped_woft)
     
     check_op = tf.add_check_numerics_ops()
-    #optimizer_wft = tf.train.GradientDescentOptimizer(learning_rate=learning_rate_wft).minimize(loss,var_list=vgg.parameters)
-    #optimizer_woft = tf.train.GradientDescentOptimizer(learning_rate=learning_rate_woft).minimize(loss,var_list=vgg.last_layer_parameters)
     
-    #combined_optimizer = tf.group(train_op_wft, train_op_woft)
-
-    #optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9)
-    #optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-    #with_fine_tuning_optimizer = optimizer.minimize(loss)
-    
-
-    #optimizer_wft = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9).minimize(loss)
-    #optimizer_woft = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9).minimize(loss, var_list = vgg.last_layer_parameters)
-    #softmax = tf.nn.softmax_cross_entropy_with_logits(logits=vgg.fc3l, labels=target)
-    #x = tf.Print(softmax, [softmax])
-
     correct_prediction = tf.equal(tf.argmax(vgg.fc3l,1), tf.argmax(target,1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     num_correct_preds = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
 
-    #init_new_vars_op = tf.variables_initializer([loss, learning_rate, optimizer, with_fine_tuning_optimizer, correct_prediction, accuracy, num_correct_preds])
-    #sess.run(init_new_vars_op)
+    
     sess.run(tf.global_variables_initializer())
 
     #vgg.load_weights(sess)
     vgg.load_initial_weights(sess)
     print([_.name for _ in vgg.parameters])
 
-    # Initializing the variables
-    #init = tf.global_variables_initializer()
-    # Launch the graph
-
-    #sess.run(init)
+    
     batch_size = 16
 
     for v in tf.trainable_variables():
@@ -425,7 +382,6 @@ if __name__ == '__main__':
     print('Starting training')
 
     lr = 0.001
-    base_lr = 1.0
     finetune_step = -1
 
     val_batch_size = 10
@@ -446,36 +402,27 @@ if __name__ == '__main__':
     print("Validation Data Accuracy -->", 100.0*correct_val_count/(1.0*total_val_count))
     print("##############################")
 
-
+    validation_accuracy_buffer = []
     for epoch in range(100):
         avg_cost = 0.
         total_batch = int(6000/batch_size)
         X_train, Y_train = shuffle(X_train, Y_train)
-        #X_val, Y_val = shuffle(X_val, Y_val)
-
-
         
 
-        #print ('Learning rate: ', (str(lr)))
         for i in range(total_batch):
             batch_xs, batch_ys = X_train[i*batch_size:i*batch_size+batch_size], Y_train[i*batch_size:i*batch_size+batch_size]
             batch_xs = random_crop(batch_xs)
             batch_xs = random_flip_right_to_left(batch_xs)
 
-            
-            #sess.run(with_fine_tuning_optimizer, feed_dict={imgs: batch_xs, target: batch_ys, learning_rate: lr})
+        
             start = time.time()
             sess.run([optimizer,check_op], feed_dict={imgs: batch_xs, target: batch_ys})
             if i%20==0:
                 print('Full BCNN finetuning, time to run optimizer for batch size 16:',time.time()-start,'seconds')
-            #sess.run([optimizer_woft, check_op])
-            #sess.run(combined_optimizer, feed_dict={imgs: batch_xs, target: batch_ys, learning_rate_wft: 0.0000, learning_rate_woft:1.0})
-            #pred = sess.run(num_correct_preds, feed_dict = {imgs: batch_xs, target: batch_ys})
-            #print("correct_train_count, total_train_count", pred, batch_size)
+            
 
             cost = sess.run(loss, feed_dict={imgs: batch_xs, target: batch_ys})
             
-            #avg_cost += cost/total_batch
             if i % 20 == 0:
                 print ('Learning rate: ', (str(lr)))
                 if epoch <= finetune_step:
@@ -488,9 +435,6 @@ if __name__ == '__main__':
                 #print(sess.run(vgg.fc3l, feed_dict={imgs: batch_xs, target: batch_ys}))
                 
 
-        #batch_val_x, batch_val_y = X_val[0:100], Y_val[0:100]
-        #print("Validation loss", sess.run(loss, feed_dict={imgs: batch_val_x, target: batch_val_y}))
-        #print("Validation Accuracy -->", accuracy.eval(feed_dict={imgs: batch_val_x, target: batch_val_y}, session=sess))
 
         val_batch_size = 10
         total_val_count = len(X_val)
@@ -509,10 +453,18 @@ if __name__ == '__main__':
         print("correct_val_count, total_val_count", correct_val_count, total_val_count)
         print("Validation Data Accuracy -->", 100.0*correct_val_count/(1.0*total_val_count))
         print("##############################")
+        
+
         if epoch>40:
-            if (100.0*correct_val_count/(1.0*total_val_count)) > 83.0:
-                print("Best val found")
-                break
+            validation_accuracy_buffer.append(100.0*correct_val_count/(1.0*total_val_count))
+
+            ## Check if the validation accuracy has stopped increasing
+            if len(validation_accuracy_buffer)>10:
+                index_of_max_val_acc = np.argmax(validation_accuracy_buffer)
+                if index_of_max_val_acc==0:
+                    break
+                else:
+                    del validation_accuracy_buffer[0]
 
         
 
