@@ -1,3 +1,6 @@
+This is an implementation of Bilinear-CNN using TensorFlow.
+
+
 Files bcnn_DD_woft.py and bcnn_DD_woft_with_random_crops.py are used 
 for the first step of the training procedure where only last layer of the BCNN_DD model is trained.</br>
 --> Learning rate = 0.9</br>
