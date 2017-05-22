@@ -33,8 +33,9 @@ at 20 frames/second and fine-tuning the entire model runs
 at 10 frames/second.
 
 
-To download the VGG16 model weigths, go to -> https://www.cs.toronto.edu/~frossard/post/vgg16/
+To download the VGG16 model weigths and to get the TensorFlow model for VGG16, go to -> https://www.cs.toronto.edu/~frossard/post/vgg16/
 
+I provide the BCNN implmentation in TensorFlow. 
 
 Files bcnn_DD_woft.py and bcnn_DD_woft_with_random_crops.py are used 
 for the first step of the training procedure where only last layer of the BCNN_DD model is trained.</br>
