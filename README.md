@@ -1,4 +1,36 @@
 This is an implementation of Bilinear-CNN using TensorFlow.
+Main objective of this project is to implement Bilinear
+Convolutional Neural Network (BCNN) for Fine-grained Visual Recognition using
+TensorFlow. I implemented the BCNN model as
+described in the http://vis-www.cs.umass.edu/bcnn/docs/bcnn_iccv15.pdf
+ and trained it on the FGVC-Aircraft
+dataset with 100 categories. Bilinear
+Convolutional Neural Network model combines
+two Convolutional Neural Network architectures pre-trained on ImageNet dataset
+using outer product at each location in the image. Training
+Bilinear Convolutional Neural Network  model is a two step training procedure in which
+the last fully connected layer is trained first followed by
+the fine-tuning entire model using back propagation. In
+this project, I present experimental results of two methods
+on top of the BCNN DD model as described in http://vis-www.cs.umass.edu/bcnn/docs/bcnn_iccv15.pdf
+which uses two VGG16 models pretrained on ImageNet
+dataset and then BCNN DD model is trained on the FGVCAircraft
+dataset. One, I experimented with a slightly different
+approach in the two-step training procedure, where
+the training of the last layer is interrupted after 10-15
+epochs and fine-tuning the entire model was started after
+that. Two, I used random cropping of images during the
+training of BCNN DD model to see if there is any significant
+improvement in the accuracy of the BCNN DD model
+on the FGVC-Aircraft dataset. I obtain 86.4% accuracy
+with the first method and 85.41% accuracy with the second
+method. Training of the network is done on NVIDIA Tesla
+M40 GPU. Training of last layer of BCNN DD model runs
+at 20 frames/second and fine-tuning the entire model runs
+at 10 frames/second.
+
+
+To download the VGG16 model weigths, go to -> https://www.cs.toronto.edu/~frossard/post/vgg16/
 
 
 Files bcnn_DD_woft.py and bcnn_DD_woft_with_random_crops.py are used 
