@@ -3,12 +3,13 @@ Convolutional Neural Network (BCNN) using TensorFlow.
 
 Main objective of this project is to implement Bilinear
 Convolutional Neural Network for Fine-grained Visual Recognition using
-TensorFlow. I implemented the BCNN model as
+TensorFlow. I implemented the Bilinear
+Convolutional Neural Network model as
 described in the http://vis-www.cs.umass.edu/bcnn/docs/bcnn_iccv15.pdf
  and trained it on the FGVC-Aircraft
 dataset with 100 categories. Bilinear
 Convolutional Neural Network model combines
-two Convolutional Neural Network architectures pre-trained on ImageNet dataset
+two Convolutional Neural Network architectures pre-trained on the ImageNet dataset
 using outer product at each location in the image. Training
 Bilinear Convolutional Neural Network  model is a two step training procedure in which
 the last fully connected layer is trained first followed by
