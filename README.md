@@ -1,4 +1,5 @@
 This is an implementation of Bilinear-CNN using TensorFlow.
+
 Main objective of this project is to implement Bilinear
 Convolutional Neural Network (BCNN) for Fine-grained Visual Recognition using
 TensorFlow. I implemented the BCNN model as
