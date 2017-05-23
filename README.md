@@ -1,4 +1,4 @@
-Bilinear CNN
+Bilinear CNN TensorFlow
 
 This is an implementation of Bilinear
 Convolutional Neural Network (Bilinear CNN) using TensorFlow.
