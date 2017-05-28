@@ -1,4 +1,4 @@
-#H1 Bilinear CNN TensorFlow
+# H1 Bilinear CNN TensorFlow
 
 This is an implementation of Bilinear
 Convolutional Neural Network (Bilinear CNN) using TensorFlow.
