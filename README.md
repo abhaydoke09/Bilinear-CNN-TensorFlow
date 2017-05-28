@@ -1,7 +1,7 @@
-# H1 Bilinear CNN TensorFlow
+# Bilinear CNN TensorFlow
 
-This is an implementation of Bilinear
-Convolutional Neural Network (Bilinear CNN) using TensorFlow.
+## This is an implementation of Bilinear
+## Convolutional Neural Network (Bilinear CNN) using TensorFlow.
 
 Main objective of this project is to implement Bilinear
 Convolutional Neural Network (Bilinear CNN) for Fine-grained Visual Recognition using
