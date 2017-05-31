@@ -1,10 +1,10 @@
 '''
-This file is to train only the last fully connected layer of BCNN_DD.
-BCNN_DD network needs images of input size [3x448x448].
+This file is to train only the last fully connected layer of Bilineaar_CNN (DD).
+Bilinear_CNN (DD) network needs images of input size [3x448x448].
 For using the random crops, images are first resized to [3x488x488] using create_h5_dataset.py.
 During the training, images are randomly cropped to the size of [3x448x448] 
 Weights for the last layer can be saved to a file and will be used during 
-finetuning the whole BCNN_DD network 
+finetuning the whole Bilinear_CNN (DD) network 
 '''
 
 from __future__ import print_function
