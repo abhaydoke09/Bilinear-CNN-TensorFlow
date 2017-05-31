@@ -36,7 +36,7 @@ at 10 frames/second.
 
 To download the VGG16 model weigths and to get the TensorFlow model for VGG16, go to -> https://www.cs.toronto.edu/~frossard/post/vgg16/
 
-I provide the BCNN implmentation in TensorFlow. 
+I provide the Bilinear CNN (BCNN) implmentation in TensorFlow. 
 
 bcnn_DD_woft.py and bcnn_DD_woft_with_random_crops.py are TensorFlow files used 
 for the first step of the training procedure where only last layer of the Bilinear CNN (DD) model is trained.</br>
