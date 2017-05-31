@@ -2,7 +2,7 @@
 This file is used for the first step of the training procedure of Bilinear_CNN
 where only last layer of the Bilinear_CNN (DD) model is trained. 
 Two VGG16 networks are connected at the output of conv5_3 layer to form 
-a Bilinear_CNN network and bilinear merging is performed on connect 
+a Bilinear_CNN (DD) network and bilinear merging is performed on connect 
 these two convolutional layers.
 No finetuning is performed on the convolutional layers.
 Only blinear layers are trained in this first step.
